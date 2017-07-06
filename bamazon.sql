@@ -54,6 +54,47 @@ VALUES ("ADJ Starburst Disco", "Lighting", 250.00 , 18);
 
 SELECT * FROM products;
 
+SELECT * 
+FROM products
+WHERE stock_quantity < 25;
+
+CREATE TABLE departments(
+  department_id INT NOT NULL AUTO_INCREMENT,
+  department_name VARCHAR(45) NOT NULL,
+  over_head_cost DECIMAL(11,2) NOT NULL,
+  product_sales DECIMAL(11,2) NOT NULL,
+  total_profit DECIMAL(11,2) NOT NULL,
+  PRIMARY KEY (department_id)
+);
+
+SELECT * FROM departments;
+
+INSERT INTO departments (department_name, over_head_cost, product_sales, total_profit)
+VALUES ("Turntables", 1000.00 , 0, 0);
+
+INSERT INTO departments (department_name, over_head_cost, product_sales, total_profit)
+VALUES ("Mixers", 800.00 , 0, 0);
+
+INSERT INTO departments (department_name, over_head_cost, product_sales, total_profit)
+VALUES ("DJ Stands", 300.00 , 0, 0);
+
+INSERT INTO departments (department_name, over_head_cost, product_sales, total_profit)
+VALUES ("Lighting", 500.00 , 0, 0);
+
+INSERT INTO departments (department_name, over_head_cost, product_sales, total_profit)
+VALUES ("DJ Accessories", 600.00 , 0, 0);
+
+INSERT INTO departments (department_name, over_head_cost, product_sales, total_profit)
+VALUES ("Sound", 900.00 , 0, 0);
+
+ALTER TABLE departments
+DROP COLUMN product_sales;
+
+ALTER TABLE products
+ADD COLUMN product_sales DECIMAL(11,2) NOT NULL;
 
 
-
+SELECT departments.department_id, departments.department_name, departments.over_head_cost, products.product_sales, (products.product_sales - departments.over_head_cost) AS total_profit
+FROM departments
+LEFT JOIN products ON departments.department_name = products.department_name
+ORDER BY products.department_name;

@@ -34,7 +34,6 @@ function manageData() {
         }
         else if (managerChoice.managerOpt === "Add to Inventory") {
         	getData();
-        	// addInventory();
         }
         else if (managerChoice.managerOpt === "Add New Product") {
         	addProduct();
@@ -135,43 +134,45 @@ function manageData() {
 	
 	function addProduct() {
 
-        // Asks product info to insert on database
+        // prompts manager for product information to add to database
         inquirer.prompt([
             {
                 type: "input",
-                message: "Type the Product Name:",
+                message: "Enter the Product Name:",
                 name: "product_name"
             }, {
                 type: "input",
-                message: "Select the Product Department:",
-                // choices: dep,
+                message: "Enter the Product Department:",
                 name: "department_name"
             }, {
                 type: "input",
-                message: "Type the Product Price:",
+                message: "Enter the Product Price:",
                 name: "price"
             }, {
                 type: "input",
-                message: "Type the Product Quantity:",
+                message: "Enter the Product Quantity:",
                 name: "stock_quantity"
+            }, {
+            	type: "input",
+                message: "Enter 0 for Product sales:",
+                name: "product_sales"
             }
         ]).then(function(managerInput) {
 
-            // Insert new product
+            // Inserts new product
             connection.query('INSERT INTO products SET ?', {
                 product_name: managerInput.product_name,
                 department_name: managerInput.department_name,
                 price: parseFloat(managerInput.price).toFixed(2),
-                stock_quantity: parseInt(managerInput.stock_quantity)
+                stock_quantity: parseInt(managerInput.stock_quantity),
+                product_sales: parseInt(managerInput.product_sales)
             }, function(err, res) {
                 if(err) throw err;
                 console.log('');
-                console.log('Product ' + managerInput.name + ' added.');
+                console.log('Product ' + managerInput.product_name + ' added.');
                 console.log('');
-                // dispSaleItems(); 
             });
             dispSaleItems();
-            // connection.end();
         });
         
     };

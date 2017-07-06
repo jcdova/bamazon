@@ -24,7 +24,8 @@ function dispSaleItems() {
        + res[i].product_name + " | " 
        + res[i].department_name + " | "
        + res[i].price + " | "
-       + res[i].stock_quantity
+       + res[i].stock_quantity + " |" +
+       + res[i].product_sales
       );
     }
     console.log("\n------------------------------------------------\n");
@@ -93,9 +94,10 @@ function getUserPrompt(data) {
             dispSaleItems();
         } else {
             updateDB(data, quantity);
+            updateSale(data, quantity);
             totalCost(data, quantity);
         }
-    }
+    };
 
     function updateDB(data, quantity) {
         var quantity_left = data[0].stock_quantity - quantity;
@@ -107,7 +109,20 @@ function getUserPrompt(data) {
             function (error, data) {
                 if (error) throw error;
             });
-    }
+    };
+
+    function updateSale(data, quantity) {
+        var totalSale = data[0].product_sales + data[0].price * quantity;
+        connection.query("UPDATE products SET ? WHERE ?",
+            [
+            	{ product_sales: totalSale },
+                { item_id: data[0].item_id } 
+            ],
+            function (error, data) {
+                if (error) throw error;
+            });
+    };
+
 
     function totalCost(data, quantity) {
         console.log("\n--------------------------------------------\n");

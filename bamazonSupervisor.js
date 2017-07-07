@@ -1,5 +1,6 @@
 var mysql = require("mysql");
 var inquirer = require("inquirer");
+var Table = require('cli-table2'); //creates a nice table
 
 var connection = mysql.createConnection({
     host: 'localhost',
@@ -15,6 +16,7 @@ connection.connect(function (err) {
     superviseData();
 });
 
+//runs the all the surpervisor actions
 function superviseData() {
     inquirer.prompt([
         {
@@ -33,29 +35,38 @@ function superviseData() {
         }
     });
 
+    //diplays all the data for all departments
     function dispSaleDept() {
+
+    	var table = new Table({
+	    head: ['Dept. ID', 'Dept. Name', 'OH Cost', 'Prod. Sales', 'Tot. Profit'], 
+	    colWidths: [10, 12, 12, 14, 14]
+		});
+
     	var query = "SELECT departments.department_id, departments.department_name, departments.over_head_cost, products.product_sales, ";
     	query += "(products.product_sales - departments.over_head_cost) AS total_profit ";
     	query += "FROM departments ";
     	query += "LEFT JOIN products ON departments.department_name = products.department_name ";
     	query += "ORDER BY products.department_name ";
-  	connection.query(query, function(err, res) {	
-  			
-  		console.log("\n------------------------------------------------\n");
-		if (err) throw err;
-	    for (var i = 0; i < res.length; i++) {
-	      console.log(res[i].department_id + " | "
-	       + res[i].department_name + " | " 
-	       + res[i].over_head_cost + " | "
-	       + res[i].product_sales + " | "
-	       + res[i].total_profit
-	      );
-	    }
-	console.log("\n------------------------------------------------\n");
-	connection.end();
-	});
+  		connection.query(query, function(err, res) {
+			console.log("\n--------------------------------------------------------------------\n");
+			if (err) throw err;
+		    for (var i = 0; i < res.length; i++) {
+		    table.push([
+		    	res[i].department_id,
+		        res[i].department_name, 
+		        res[i].over_head_cost,
+		        res[i].product_sales,
+		        res[i].total_profit
+		    	]);	
+			};
+			console.log(table.toString());
+			console.log("\n--------------------------------------------------------------------\n");
+			connection.end();
+		});
 	};
 
+	//creates the a department based on the user input
 	function createDept() {
 
         // prompts supervisor for product information to add to database

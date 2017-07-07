@@ -40,7 +40,7 @@ function superviseData() {
 
     	var table = new Table({
 	    head: ['Dept. ID', 'Dept. Name', 'OH Cost', 'Prod. Sales', 'Tot. Profit'], 
-	    colWidths: [10, 12, 12, 14, 14]
+	    colWidths: [10, 18, 12, 14, 14]
 		});
 
     	var query = "SELECT departments.department_id, departments.department_name, departments.over_head_cost, products.product_sales, ";

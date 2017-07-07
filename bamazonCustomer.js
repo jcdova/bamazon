@@ -1,5 +1,6 @@
 var mysql = require("mysql");
 var inquirer = require("inquirer");
+var Table = require('cli-table2'); //creates a nice table
 
 var connection = mysql.createConnection({
     host: 'localhost',
@@ -15,24 +16,33 @@ connection.connect(function (err) {
     dispSaleItems();
 });
 
+//displays all the data
 function dispSaleItems() {
-  connection.query("SELECT * FROM products", function(err, res) {
+	var table = new Table({
+	    head: ['Prod. ID', 'Prod. Name', 'Dept. Name', 'Price', 'Quantity', 'Sales'], 
+	    colWidths: [10, 25, 18, 12, 14, 12]
+		});
+  	connection.query("SELECT * FROM products", function(err, res) {
     if (err) throw err;
     console.log("\n------------------------------------------------\n");
     for (var i = 0; i < res.length; i++) {
-      console.log(res[i].item_id + " | "
-       + res[i].product_name + " | " 
-       + res[i].department_name + " | "
-       + res[i].price + " | "
-       + res[i].stock_quantity + " |" +
-       + res[i].product_sales
-      );
-    }
-    console.log("\n------------------------------------------------\n");
-    buyQuestion();
-  });
+
+    	table.push([
+			    res[i].item_id,
+			    res[i].product_name, 
+			    res[i].department_name,
+			    res[i].price,
+			    res[i].stock_quantity,
+			    res[i].product_sales
+		    	]);	
+			};
+		console.log(table.toString());
+		console.log("\n------------------------------------------------\n");
+    	buyQuestion();
+  	});
 };
 
+//asks an intial question
 function buyQuestion() {
   inquirer.prompt([
   {
@@ -50,6 +60,7 @@ function buyQuestion() {
   })
 };
 
+//gets info from user
 function getData() {
     connection.query("SELECT * FROM products", function (error, data) {
         if (error) throw error;
@@ -57,6 +68,7 @@ function getData() {
     });
 }
 
+//prompts user with a list of options utllizing table listings as options
 function getUserPrompt(data) {
     var options = [];
     for (j in data) {
@@ -87,6 +99,7 @@ function getUserPrompt(data) {
             });
     });
 
+    //checks to see if there is enough quantity based on the user input
     function checkStock(data, quantity) {
         if (data[0].stock_quantity < quantity) {
             console.log("Sorry we do not have enough items in stock. Please view how many items are remaining.");
@@ -99,6 +112,7 @@ function getUserPrompt(data) {
         }
     };
 
+    //updates the table with new quantity value
     function updateDB(data, quantity) {
         var quantity_left = data[0].stock_quantity - quantity;
         connection.query("UPDATE products SET ? WHERE ?",
@@ -111,6 +125,7 @@ function getUserPrompt(data) {
             });
     };
 
+    //updtaes the tbale with new sales value
     function updateSale(data, quantity) {
         var totalSale = data[0].product_sales + data[0].price * quantity;
         connection.query("UPDATE products SET ? WHERE ?",
@@ -123,7 +138,7 @@ function getUserPrompt(data) {
             });
     };
 
-
+    //displays the most recent transaction
     function totalCost(data, quantity) {
         console.log("\n--------------------------------------------\n");
         console.log("Product   : " + data[0].product_name);

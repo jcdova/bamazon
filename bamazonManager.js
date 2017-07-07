@@ -1,5 +1,6 @@
 var mysql = require("mysql");
 var inquirer = require("inquirer");
+var Table = require('cli-table2'); //Creates a nice table
 
 var connection = mysql.createConnection({
     host: 'localhost',
@@ -15,7 +16,7 @@ connection.connect(function (err) {
     manageData();
 });
 
-
+//runs all the manager actions
 function manageData() {
     inquirer.prompt([
         {
@@ -41,40 +42,56 @@ function manageData() {
 
     });
 
+    //displays all the data 
     function dispSaleItems() {
-  	connection.query("SELECT * FROM products", function(err, res) {
-  		console.log("\n------------------------------------------------\n");
+    	var table = new Table({
+	    head: ['Prod. ID', 'Prod. Name', 'Dept. Name', 'Price', 'Quantity'], 
+	    colWidths: [10, 25, 18, 12, 14]
+		});
+  		connection.query("SELECT * FROM products", function(err, res) {
+  		console.log("\n------------------------------------------------------------------\n");
 		if (err) throw err;
 	    for (var i = 0; i < res.length; i++) {
-	      console.log(res[i].item_id + " | "
-	       + res[i].product_name + " | " 
-	       + res[i].department_name + " | "
-	       + res[i].price + " | "
-	       + res[i].stock_quantity
-	      );
-	    }
-	console.log("\n------------------------------------------------\n");
-	connection.end();
-	});
+
+	    	table.push([
+		    	res[i].item_id,
+		        res[i].product_name, 
+		        res[i].department_name,
+		        res[i].price,
+		        res[i].stock_quantity
+		    	]);	
+			};
+			console.log(table.toString());
+			console.log("\n------------------------------------------------------------------\n");
+			connection.end();
+		});
 	};
 
-	function viewLowInventory() {	
-	connection.query('SELECT * FROM products WHERE stock_quantity < 25', function(err, res) { 
+	//displays all inventory less than 25 items
+	function viewLowInventory() {
+		var table = new Table({
+	    head: ['Prod. ID', 'Prod. Name', 'Dept. Name', 'Price', 'Quantity'], 
+	    colWidths: [10, 25, 18, 12, 14]
+		});
+		connection.query('SELECT * FROM products WHERE stock_quantity < 25', function(err, res) { 
 		if (err) throw err;
 		console.log("\n------------------------------------------------\n");
 		for (var i = 0; i < res.length; i++) {
-	      console.log(res[i].item_id + " | "
-	       + res[i].product_name + " | " 
-	       + res[i].department_name + " | "
-	       + res[i].price + " | "
-	       + res[i].stock_quantity
-	      );	
-		}
-	console.log("\n------------------------------------------------\n");
-	connection.end();
-	});
+			table.push([
+		    	res[i].item_id,
+		        res[i].product_name, 
+		        res[i].department_name,
+		        res[i].price,
+		        res[i].stock_quantity
+		    	]);	
+			};
+			console.log(table.toString());
+			console.log("\n------------------------------------------------\n");
+			connection.end();
+		});
 	};
 
+	//opbtains the data 
 	function getData() {
     connection.query("SELECT * FROM products", function (error, data) {
         if (error) throw error;
@@ -82,6 +99,7 @@ function manageData() {
     });
 	}
 
+	//prompts user with a list of options utllizing table listings as options
 	function addInventory(data) {
     var options = [];
     for (j in data) {
@@ -97,7 +115,7 @@ function manageData() {
         {
             type: "input",
             message: "Enter the quantity you want to add:",
-            name: "quantity"
+            name: "quantity",
         }
     ]).then(function (userInput) {
 
@@ -112,13 +130,15 @@ function manageData() {
             });
     });
 
+    //adds the quantity and displays data
     function addStock(data, quantity) {
        	updateDB(data, quantity);
         dispSaleItems();       
     };
 
+    //updates the quantity
     function updateDB(data, quantity) {
-    	var newQuantity = data[0].stock_quantity + quantity 
+    	var newQuantity = data[0].stock_quantity + quantity; 
         connection.query("UPDATE products SET ? WHERE ?",
             [
                 { stock_quantity: newQuantity },
@@ -131,7 +151,7 @@ function manageData() {
 	
 	};
 
-	
+	//adds the a new product by prompting the user
 	function addProduct() {
 
         // prompts manager for product information to add to database

@@ -138,7 +138,7 @@ function manageData() {
 
     //updates the quantity
     function updateDB(data, quantity) {
-    	var newQuantity = data[0].stock_quantity + quantity; 
+    	var newQuantity = data[0].stock_quantity + parseInt(quantity); 
         connection.query("UPDATE products SET ? WHERE ?",
             [
                 { stock_quantity: newQuantity },

@@ -125,7 +125,7 @@ function getUserPrompt(data) {
             });
     };
 
-    //updtaes the tbale with new sales value
+    //updates the tbale with new sales value
     function updateSale(data, quantity) {
         var totalSale = data[0].product_sales + data[0].price * quantity;
         connection.query("UPDATE products SET ? WHERE ?",

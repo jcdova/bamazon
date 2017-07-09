@@ -1,0 +1,15 @@
+item_id,product_name,department_name,price,stock_quantity,product_sales
+1,"Reloop rp-8000",Turntables,700.00,48,1400.00
+2,"Technics MCC-SL-1200MKS",Turntables,1000.00,15,4000.00
+3,"Stanton ST150M2",Turntables,600.00,5,3000.00
+4,"Pioneer DJM-750",Mixers,990.00,5,2970.00
+5,"Mixars MIX-UNO",Mixers,300.00,6,1500.00
+6,"Numarc M6",Mixers,150.00,63,300.00
+7,"Odyssey FZF5437T","DJ Stands",220.00,191,220.00
+8,"Sefour X25","DJ Stands",37.00,61,333.00
+9,"QuikLok WS5550",Lighting,130.00,61,260.00
+10,"X-Laser Mobile Beat",Lighting,1880.00,132,3760.00
+11,"Chauvet DJ EZpar",Lighting,190.00,77,570.00
+12,"ADJ Starburst Disco",Lighting,250.00,170,250.00
+13,"Cerwin Vega Speakers",Sound,1500.00,40,15000.00
+14,Microphone,"DJ Accessories",42.00,211,42630.00
